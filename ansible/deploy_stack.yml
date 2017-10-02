@@ -13,7 +13,7 @@
 
 # - include: deploy_common.yml tags=common
 # - include: deploy_lvm.yml
-- include: deploy_db.yml
+# - include: deploy_db.yml
 - include: deploy_commcarehq.yml
 - include: deploy_proxy.yml
 - include: deploy_shared_dir.yml

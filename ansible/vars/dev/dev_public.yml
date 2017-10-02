@@ -8,6 +8,9 @@ internal_domain_name: 'localdomain'
 
 testing: True
 
+riakcs_s3_access_key: "you complete me"
+riakcs_s3_secret_key: "you complete me"
+
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
 # - "169.38.74.104   commcarehq-india.cloudant.com"
