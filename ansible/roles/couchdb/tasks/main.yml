@@ -1,5 +1,5 @@
 # CouchDB
-- name: Install prequisites
+- name: Install CouchDB prequisites
   apt: name="{{ item }}" state=present
   with_items:
     - build-essential
@@ -12,6 +12,15 @@
     - libicu-dev
     - libcurl4-gnutls-dev
     - libtool
+
+- name: Install pip packages
+  pip: name="{{ item }}"
+  sudo: yes
+  with_items:
+    - urllib3
+    - pyopenssl
+    - ndg-httpsclient
+    - pyasn1
 
 - name: Check CouchDB existence
   stat: path="{{ couchdb_install_path }}"
@@ -52,14 +61,14 @@
   when: not couchdb_path.stat.exists and couchdb_compile|success
 
 - name: Add CouchDB user
-  user: name=couchdb group=couchdb createhome=no password=no state=present
+  user: name=couchdb createhome=no password=no state=present
 
 - name: Apply CouchDB config
   template: src=local.ini.j2 dest=/usr/local/etc/couchdb/local.ini
   register: update_config
 
 - name: CouchDB ownership permissions
-  file: path="{{ item }}" owner=couchdb group=couchdb recurse=yes state=directory
+  file: path="{{ item }}" owner=couchdb recurse=yes state=directory
   with_items:
     - "{{ couch_log_dir }}"
     - /usr/local/var/lib/couchdb
@@ -95,7 +104,7 @@
 
 - name: Set CouchDB username and password
   uri:
-    url: "http{% if item.is_https %}s{% endif %}://{{ item.host }}:{{ item.port }}/_config/admins/{{ item.username }}"
+    url: "http{% if item.is_https %}s{% endif %}://{{ item.username }}@{{ item.host }}:{{ item.port }}/_config/admins/{{ item.username }}"
     method: PUT
     status_code: 200
     body: '"{{ item.password }}"'
