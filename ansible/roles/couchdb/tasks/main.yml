@@ -13,7 +13,7 @@
     - libcurl4-gnutls-dev
     - libtool
 
-- name: Install pip packages
+- name: Install couchdb pip packages
   pip: name="{{ item }}"
   sudo: yes
   with_items:
@@ -102,9 +102,20 @@
   when: not item.skipped|default(false) and item.status == 404
   with_items: "{{ couch_response.results }}"
 
+# TD thinks that only the first one should run here, since the second would be
+# creating a user with the same username/password.
+# TASK [couchdb : Set CouchDB username and password] *****************************
+# ok: [165.227.172.214] => (item={u'username': u'commcarehq', u'name': u'commcarehq', u'is_https': False, u'host': u'165.227.172.214', u'password': u'commcarehq', u'port': 5984})
+# failed: [165.227.172.214] (item={u'username': u'commcarehq', u'name': u'commcarehq__users', u'is_https': False, u'host': u'165.227.172.214', u'password': u'commcarehq', u'port': 5984}) => {"cache_control": "must-revalidate", "content": "{\"error\":\"unauthorized\",\"reason\":\"You are not a server admin.\"}\n", "content_length": "64", "content_type": "text/plain; charset=utf-8", "date": "Thu, 05 Oct 2017 11:10:34 GMT", "failed": true, "item": {"host": "165.227.172.214", "is_https": false, "name": "commcarehq__users", "password": "commcarehq", "port": 5984, "username": "commcarehq"}, "msg": "Status code was not [200]: HTTP Error 401: Unauthorized", "redirected": false, "server": "CouchDB/1.6.1 (Erlang OTP/R16B03)", "status": 401, "url": "http://165.227.172.214:5984/_config/admins/commcarehq"}
+# 	to retry, use: --limit @/vagrant/ansible/deploy_stack.retry
+#
+# PLAY RECAP *********************************************************************
+# 165.227.172.214            : ok=135  changed=90   unreachable=0    failed=1
+#
 - name: Set CouchDB username and password
   uri:
-    url: "http{% if item.is_https %}s{% endif %}://{{ item.username }}@{{ item.host }}:{{ item.port }}/_config/admins/{{ item.username }}"
+    # url: "http{% if item.is_https %}s{% endif %}://{{ item.username }}:{{ item.password }}@{{ item.host }}:{{ item.port }}/_config/admins/{{ item.username }}"
+    url: "http{% if item.is_https %}s{% endif %}://{{ item.host }}:{{ item.port }}/_config/admins/{{ item.username }}"
     method: PUT
     status_code: 200
     body: '"{{ item.password }}"'

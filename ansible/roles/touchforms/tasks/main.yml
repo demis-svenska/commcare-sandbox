@@ -1,4 +1,23 @@
+# TODO: add something like this...
+# su - cchq
+# cd www/dev/current
+# source python_env/bin/activate
+# pip install -r requirements/requirements.txt
+# ==============================================================================
+# - name: install pip requirements for touchforms
+#   sudo_user: "{{ cchq }}"
+#   pip:
+#     requirements: "~/dev/www/current/requirements/requirements.txt"
+#     virtualenv: "{{ prototype_virtualenv_home }}"
+
 # NOTE: consider removing
+# TASK [touchforms : Touchforms user] ********************************************
+# An exception occurred during task execution. To see the full traceback, use -vvv. The error was: ImportError: No module named django
+# fatal: [165.227.172.214 -> 165.227.172.214]: FAILED! => {"changed": false, "failed": true, "module_stderr": "Traceback (most recent call last):\n  File \"/tmp/ansible_iUft9p/ansible_module_django_user.py\", line 144, in <module>\n    main()\n  File \"/tmp/ansible_iUft9p/ansible_module_django_user.py\", line 125, in main\n    user.create_user()\n  File \"/tmp/ansible_iUft9p/ansible_module_django_user.py\", line 84, in create_user\n    superuser=repr(self.superuser),\n  File \"/usr/local/lib/python2.7/dist-packages/sh.py\", line 1427, in __call__\n    return RunningCommand(cmd, call_args, stdin, stdout, stderr)\n  File \"/usr/local/lib/python2.7/dist-packages/sh.py\", line 774, in __init__\n    self.wait()\n  File \"/usr/local/lib/python2.7/dist-packages/sh.py\", line 792, in wait\n    self.handle_command_exit_code(exit_code)\n  File \"/usr/local/lib/python2.7/dist-packages/sh.py\", line 815, in handle_command_exit_code\n    raise exc\nsh.ErrorReturnCode_1: \n\n  RAN: /home/cchq/www/dev/current/python_env/bin/python manage.py shell --plain\n\n  STDOUT:\n\n\n  STDERR:\nTraceback (most recent call last):\n  File \"manage.py\", line 9, in <module>\n    import django\nImportError: No module named django\n\n", "module_stdout": "Traceback (most recent call last):\n  File \"manage.py\", line 9, in <module>\n    import django\nImportError: No module named django\n\n", "msg": "MODULE FAILURE"}
+# 	to retry, use: --limit @/vagrant/ansible/deploy_stack.retry
+#
+# PLAY RECAP *********************************************************************
+# 165.227.172.214            : ok=259  changed=144  unreachable=0    failed=1
 - name: Touchforms user
   delegate_to: "{{ groups.webworkers.0 }}"
   become: yes

@@ -97,6 +97,17 @@
   notify: reload monit
   tags: monit
 
+# TODO: consider starting the monit daemon before calling this. Currently, it fails with:
+# TASK [couchdb2 : monit] ********************************************************
+# fatal: [165.227.172.214]: FAILED! => {"changed": false, "failed": true, "msg": "couchdb2 process not presently configured with monit", "name": "couchdb2", "state": "monitored"}
+#
+# RUNNING HANDLER [monit : reload monit] *****************************************
+# 	to retry, use: --limit @/vagrant/ansible/deploy_stack.retry
+#
+# PLAY RECAP *********************************************************************
+# 165.227.172.214            : ok=36   changed=20   unreachable=0    failed=1
+# I get it to run after ssh-ing in and running `monit` as root, awakening the monit daemon.
+# I love awakening daemons...
 - monit:
     name: couchdb2
     state: monitored
