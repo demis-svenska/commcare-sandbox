@@ -8,6 +8,9 @@ internal_domain_name: 'localdomain'
 
 testing: True
 
+riakcs_s3_access_key: "you complete me"
+riakcs_s3_secret_key: "you complete me"
+
 etc_hosts_lines: []
 etc_hosts_lines_removed: []
 # - "169.38.74.104   commcarehq-india.cloudant.com"
@@ -224,6 +227,7 @@ localsettings:
   EMAIL_SMTP_PORT: '1025'
   # use True in prod!
   EMAIL_USE_TLS: no
+  FORMPLAYER_INTERNAL_AUTH_KEY: "{{ localsettings_private.FORMPLAYER_INTERNAL_AUTH_KEY }}"
   FULLSTORY_ID:
   GMAPS_API_KEY: "{{ localsettings_private.GMAPS_API_KEY }}"
   GOOGLE_ANALYTICS_API_ID: "{{ localsettings_private.GOOGLE_ANALYTICS_API_ID }}"
@@ -258,6 +262,7 @@ localsettings:
   PG_DATABASE_NAME: commcarehq
   PG_DATABASE_PASSWORD: "{{ secrets.pg_user_passwords.default }}"
   PG_DATABASE_USER: commcarehq
+  PG_DATABASE_PORT: 6432
 #  PILLOWTOP_MACHINE_ID:
 #  PILLOW_RETRY_QUEUE_ENABLED:
   REDIS_DB: '0'

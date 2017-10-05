@@ -12,10 +12,10 @@
   with_items: "{{ redis_ubuntu_pkg }}"
   environment: env
 
-- name: Copy the redis configuration file 
+- name: Copy the redis configuration file
   template: src=redis.conf.j2 dest="{{ redis_conf_dest }}"
-  notify: 
-   - restart redis 
+  notify:
+   - restart redis
 
 - name: Copy the rsyslogd configuration file for redis filter
   template: src=rsyslogd.conf.j2 dest=/etc/rsyslog.d/redis.conf
@@ -23,7 +23,7 @@
   notify:
   - restart rsyslog
 
-- name: Set the kernel paramter for vm overcommit 
+- name: Set the kernel paramter for vm overcommit
   sysctl: name=vm.overcommit_memory value="{{ redis_overcommit_memory }}" state=present
 
 - name: start the redis service
@@ -40,7 +40,20 @@
     mode: 0640
   notify: reload monit
   tags: monit
-
+  
+# TODO: this fails but then succeeds after a system reboot and manually running `monit` as root.
+# TASK [redis : monit] ***********************************************************
+# fatal: [165.227.172.214]: FAILED! => {"changed": false, "failed": true, "msg": "redis process not presently configured with monit", "name": "redis", "state": "monitored"}
+#
+# RUNNING HANDLER [monit : reload monit] *****************************************
+#
+# RUNNING HANDLER [redis : restart redis] ****************************************
+#
+# RUNNING HANDLER [redis : restart rsyslog] **************************************
+# 	to retry, use: --limit @/vagrant/ansible/deploy_stack.retry
+#
+# PLAY RECAP *********************************************************************
+# 165.227.172.214            : ok=17   changed=10   unreachable=0    failed=1
 - monit:
     name: redis
     state: monitored
