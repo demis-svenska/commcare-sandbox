@@ -23,3 +23,47 @@
 - include: deploy_mailrelay.yml
 - include: deploy_tmpreaper.yml
 - include: deploy_etckeeper.yml
+
+# It is because of the encrypted data dir that must be decrypted before postgres tries to start on startup...
+# try running:
+#  /etc/init.d/postgresql start
+#  /etc/init.d/pgbouncer stop
+#  /etc/init.d/pgbouncer start
+#
+# 2017-10-05 14:58:48,002 INFO Raven is not configured (logging is disabled). Please see the documentation for more information.
+# Performing system checks...
+#
+# 2017-10-05 14:58:49,614 INFO AXES: BEGIN LOG
+# System check identified no issues (0 silenced).
+#
+# You have 520 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): accounting, admin, auth, authtoken, blobs, calendar_fixture, captcha, case_importer, case_search, cleanup, commtrack, contenttypes, couchforms, data_analytics, data_dictionary, data_interfaces, dhis2, django_digest, django_prbac, djcelery, doctypemigrations, domain, domain_migration_flags, dropbox, enikshay, ewsghana, export, fixtures, form_processor, formplayer, hqadmin, hqwebapp, icds_reports, ilsgateway, ivr, locations, logistics, m4change, nikshay_datamigration, notifications, ota, otp_static, otp_totp, phone, phonelog, pillow_retry, pillowtop, private_sector_datamigration, products, reminders, repeaters, reports, scheduling, scheduling_partitioned, sessions, sites, sms, smsbillables, smsforms, sql_accessors, sql_proxy_accessors, stock, tastypie, telerivet, toggle_ui, tour, two_b_datamigration, two_factor, tzmigration, userreports, users, warehouse, zapier, zipline.
+# Run 'python manage.py migrate' to apply them.
+#
+# October 05, 2017 - 14:58:51
+# Django version 1.10.8, using settings 'settings'
+# Starting development server at http://0.0.0.0:9010/
+# Quit the server with CONTROL-C.
+
+# RoryRory at 12:03
+# Yup - I think we need to run migrations and we also need to
+# 'You may need to run "python manage.py compress".' % key)
+# OfflineGenerationError: You have offline compression enabled but key "89af02fe109c09d9c74742e99d8f3fea" is missing from offline manifest. You may need to run "python manage.py compress".
+# Wrt the postgres stuff - we don't add it to ansible just yet, because I think we only had to run it cos of the encrypted fs issue
+# It was not decrypted when we started up
+# So, postgres would not have started up
+# So, pgbouncer could not connect
+# If we can get the Fs to decrypt on boot, then hopefully pgbouncer/postgres will just work
+# i am gong to try the manage.py compress
+# and see about the migrations quicklyt
+# manage.py compress
+# ...
+# that errors out but I am going to try it again after
+# ./manage.py migrate
+#
+# The above had an issue - the output recommends that I do:
+# CCHQ_IS_FRESH_INSTALL=1 python manage.py migrate
+#
+# Ok, now we have:
+# botocore.exceptions.ClientError: An error occurred (AccessDenied) when calling the ListObjects operation: Access Denied
+# CONFIRMED: cchq right now and running this from www/dev/current inside (python_env) activated:
+# Also, the manage.py compress step failed becuase of a font issue
