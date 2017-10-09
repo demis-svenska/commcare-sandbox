@@ -12,6 +12,7 @@
     - aptcache
 
 - include: deploy_common.yml tags=common
+# add "apt-get install fabric"
 - include: deploy_lvm.yml
 - include: deploy_db.yml
 - include: deploy_commcarehq.yml
